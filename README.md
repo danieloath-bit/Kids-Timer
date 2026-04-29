@@ -22,3 +22,9 @@ Open the project in Android Studio, or run:
 ```powershell
 .\gradlew.bat assembleDebug
 ```
+
+## Download
+
+An installable debug APK is available at [releases/KidsTimer-1.0.0-debug.apk](releases/KidsTimer-1.0.0-debug.apk).
+
+Android may show warnings when installing APKs downloaded outside the Play Store.
