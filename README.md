@@ -1,3 +1,5 @@
+<img width="1536" height="1024" alt="kids-timer-hero" src="https://github.com/user-attachments/assets/73a1a376-62f8-4e7c-bed0-80dbef3fcca1" />
+
 # Kids Timer
 
 A simple visual countdown timer designed for children's everyday tasks.
