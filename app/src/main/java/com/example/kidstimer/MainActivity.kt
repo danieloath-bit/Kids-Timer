@@ -3,6 +3,7 @@ package com.example.kidstimer
 import android.media.AudioManager
 import android.media.ToneGenerator
 import android.os.Bundle
+import android.view.WindowManager
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -76,6 +77,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         setContent {
             KidsTimerTheme {
                 KidsTimerApp()
@@ -222,8 +224,9 @@ private fun AnalogCountdownClock(
     modifier: Modifier = Modifier
 ) {
     val progress = if (totalSeconds == 0) 0f else secondsLeft / totalSeconds.toFloat()
-    val sweep = progress * 360f
-    val minuteHandAngle = 360f * progress - 90f
+    val remainingSweep = -progress * 360f
+    val elapsedSweep = -(1f - progress) * 360f
+    val handAngle = -90f - progress * 360f
     val bobble by rememberInfiniteTransition(label = "clock bobble").animateFloat(
         initialValue = 0f,
         targetValue = if (isFinished) 1f else 0f,
@@ -253,9 +256,18 @@ private fun AnalogCountdownClock(
             drawCircle(Color(0xFFFFFEFB), radius = radius * (0.92f + bobble * 0.03f), center = center)
             drawCircle(Color(0xFFB9E7DD), radius = radius * 0.92f, center = center, style = Stroke(ringStroke))
             drawArc(
+                color = Color(0xFFEAF4F0),
+                startAngle = -90f,
+                sweepAngle = elapsedSweep,
+                useCenter = false,
+                style = Stroke(ringStroke, cap = StrokeCap.Butt),
+                topLeft = Offset(center.x - radius * 0.92f, center.y - radius * 0.92f),
+                size = androidx.compose.ui.geometry.Size(radius * 1.84f, radius * 1.84f)
+            )
+            drawArc(
                 color = Color(0xFFFFB84D),
                 startAngle = -90f,
-                sweepAngle = sweep,
+                sweepAngle = remainingSweep,
                 useCenter = false,
                 style = Stroke(ringStroke, cap = StrokeCap.Round),
                 topLeft = Offset(center.x - radius * 0.92f, center.y - radius * 0.92f),
@@ -276,7 +288,7 @@ private fun AnalogCountdownClock(
                 )
             }
 
-            rotate(degrees = minuteHandAngle, pivot = center) {
+            rotate(degrees = handAngle, pivot = center) {
                 drawLine(
                     color = Color(0xFF2D5250),
                     start = center,
